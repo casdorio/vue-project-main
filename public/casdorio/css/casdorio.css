@@ -1,0 +1,296 @@
+/*
+* demo.css
+* File include item demo only specific css only
+******************************************************************************/
+
+.menu .app-brand.demo {
+  height: 64px;
+  margin-top: 12px;
+}
+
+.app-brand-logo.demo svg {
+  width: 42px;
+  height: 42px;
+}
+
+.app-brand-text.demo {
+  font-size: 1.25rem;
+  letter-spacing: -0.5px;
+}
+
+/* ! For .layout-navbar-fixed added fix padding top to .layout-page */
+/* Detached navbar */
+.layout-navbar-fixed .layout-wrapper:not(.layout-horizontal):not(.layout-without-menu) .layout-page {
+  padding-top: 74px !important;
+}
+
+/* Default navbar */
+.layout-navbar-fixed .layout-wrapper:not(.layout-without-menu) .layout-page {
+  padding-top: 64px !important;
+}
+
+.docs-page .layout-navbar-fixed.layout-wrapper:not(.layout-without-menu) .layout-page,
+.docs-page .layout-menu-fixed.layout-wrapper:not(.layout-without-menu) .layout-page {
+  padding-top: 62px !important;
+}
+
+/* Navbar page z-index issue solution */
+.content-wrapper .navbar {
+  z-index: auto;
+}
+
+/*
+* Content
+******************************************************************************/
+
+.demo-blocks>* {
+  display: block !important;
+}
+
+.demo-inline-spacing>* {
+  margin: 1rem 0.375rem 0 0 !important;
+}
+
+/* ? .demo-vertical-spacing class is used to have vertical margins between elements. To remove margin-top from the first-child, use .demo-only-element class with .demo-vertical-spacing class. For example, we have used this class in forms-input-groups.html file. */
+.demo-vertical-spacing>* {
+  margin-top: 1rem !important;
+  margin-bottom: 0 !important;
+}
+
+.demo-vertical-spacing.demo-only-element> :first-child {
+  margin-top: 0 !important;
+}
+
+.demo-vertical-spacing-lg>* {
+  margin-top: 1.875rem !important;
+  margin-bottom: 0 !important;
+}
+
+.demo-vertical-spacing-lg.demo-only-element> :first-child {
+  margin-top: 0 !important;
+}
+
+.demo-vertical-spacing-xl>* {
+  margin-top: 5rem !important;
+  margin-bottom: 0 !important;
+}
+
+.demo-vertical-spacing-xl.demo-only-element> :first-child {
+  margin-top: 0 !important;
+}
+
+/* Dropdown buttons going out of small screens */
+@media (max-width: 576px) {
+  #dropdown-variation-demo .btn-group .text-truncate {
+    width: 231px;
+    position: relative;
+  }
+
+  #dropdown-variation-demo .btn-group .text-truncate::after {
+    position: absolute;
+    top: 45%;
+    right: 0.65rem;
+  }
+}
+
+/*
+* Layout demo
+******************************************************************************/
+
+.layout-demo-wrapper {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  margin-top: 1rem;
+}
+
+.layout-demo-placeholder img {
+  width: 900px;
+}
+
+.layout-demo-info {
+  text-align: center;
+  margin-top: 1rem;
+}
+
+
+.menu-inner-shadow {
+  top: 7.66rem !important;
+}
+
+
+
+
+div:where(.swal2-container) div:where(.swal2-loader) {
+  border-color: var(--bs-primary) transparent var(--bs-primary) transparent !important;
+}
+
+.light-style .swal2-container {
+  z-index: 1091 !important;
+}
+
+.layout-menu-collapsed .bootstrap-select .select-units {
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.layout-menu-collapsed .bootstrap-select.select-units {
+  display: none !important;
+}
+
+.layout-menu-hover .bootstrap-select.select-units {
+  display: block !important;
+}
+
+.dropdown-school .filter-option-inner-inner {
+  padding-right: 30px;
+}
+
+
+.flatpickr-calendar {
+  z-index: 1190 !important;
+}
+
+
+.content-section {
+  opacity: 0;
+  transition: opacity 0.3s ease-in;
+}
+
+.content-section.show {
+  opacity: 1;
+}
+
+/* SOLUÇÃO 1: Footer Absoluto respeitando o layout da aplicação */
+.content-footer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  /* Não definir width: 100% para respeitar o container pai */
+}
+
+/* Para layouts com menu lateral, ajustar a posição */
+.layout-page .content-footer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  /* O footer ficará dentro do .layout-page, não cobrindo o menu */
+}
+
+/* Alternativamente, posicionar relativo ao content-wrapper */
+.content-wrapper {
+  position: relative;
+  min-height: calc(100vh - 100px);
+  /* Ajuste conforme altura do navbar */
+  padding-bottom: 80px;
+  /* Espaço para o footer */
+}
+
+.content-wrapper .content-footer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
+}
+
+/* Garantir que o container interno mantenha o justify-content */
+.content-footer .container-xxl {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center;
+  width: 100%;
+  max-width: 1320px;
+  margin: 0 auto;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+
+/* OU SOLUÇÃO 2: Usando CSS Grid no footer absoluto */
+.content-footer-alt {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 1rem;
+  padding: 0.5rem 1rem;
+  z-index: 10;
+}
+
+/* SOLUÇÃO 3: Flexbox com width específicas */
+.content-footer-flex {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  display: flex;
+  z-index: 10;
+}
+
+.content-footer-flex .container-xxl {
+  display: flex;
+  width: 100%;
+  padding: 0.5rem 1rem;
+}
+
+.content-footer-flex .footer-left {
+  flex: 1;
+  text-align: left;
+}
+
+.content-footer-flex .footer-right {
+  flex: 1;
+  text-align: right;
+}
+
+/* Responsivo */
+@media (max-width: 768px) {
+  .content-footer .container-xxl {
+    flex-direction: column !important;
+    text-align: center;
+  }
+
+  .content-footer-flex .footer-left,
+  .content-footer-flex .footer-right {
+    text-align: center;
+    flex: none;
+  }
+
+  body {
+    padding-bottom: 120px;
+    /* Mais espaço em mobile */
+  }
+}
+
+
+
+.profile-img-sm {
+  width: 36px;
+  height: 36px;
+  object-fit: cover;
+}
+
+div.dt-processing {
+  margin-top: 7px !important;
+}
+
+div.dt-processing>div:last-child>div {
+  background: var(--bs-primary) !important;
+}
