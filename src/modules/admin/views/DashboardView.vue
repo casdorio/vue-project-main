@@ -1,7 +1,6 @@
 <template>
   <div class="content-wrapper">
     <div class="container-xxl flex-grow-1 container-p-y">
-      <!-- Header Card -->
       <div class="row mb-4">
         <div class="col-12">
           <div class="card bg-menu-theme-subtle shadow-sm">
@@ -39,171 +38,174 @@
         </div>
       </div>
 
-      <!-- No Active School Alert -->
-      <div v-if="!settingsStore.activeSchool" class="row mb-4">
-        <div class="col-12">
-          <div class="card border-warning">
-            <div class="card-body text-center py-5">
-              <div class="avatar avatar-xl mb-3">
-                <span class="avatar-initial rounded-circle bg-label-warning">
-                  <i class='bx bx-school fs-3'></i>
-                </span>
-              </div>
-              <h4 class="text-warning mb-3">Configure sua Primeira Escola</h4>
-              <p class="text-muted mb-4">
-                Para começar, cadastre uma escola e configure os detalhes necessários.
-              </p>
-              <router-link to="/admin/schools" class="btn btn-warning btn-lg" data-bs-toggle="tooltip"
-                data-bs-placement="top" title="Iniciar cadastro de uma nova escola">
-                <i class='bx bx-plus me-1'></i>Cadastrar Primeira Escola
-              </router-link>
-            </div>
-          </div>
+      <div v-if="isLoading" class="d-flex justify-content-center align-items-center"
+        style="height: 50vh; width: 100%; position: absolute; top: 0; left: 0; z-index: 10;">
+        <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
+          <span class="visually-hidden">Loading...</span>
         </div>
       </div>
 
-      <!-- Configuration Section -->
-      <div v-else>
-        <!-- Progress Card -->
-        <div class="row mb-4">
+      <div :class="{ 'd-none': isLoading }">
+        <div v-if="!settingsStore.activeSchool" class="row mb-4">
           <div class="col-12">
-            <div class="card">
-              <div class="card-body">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                  <h5 class="card-title mb-0">Progresso de Configuração</h5>
-                  <span class="badge bg-label-primary">{{ completionPercentage }}% Concluído</span>
-                </div>
-                <div class="progress" style="height: 15px;">
-                  <div class="progress-bar bg-primary" role="progressbar" :style="{ width: completionPercentage + '%' }"
-                    :aria-valuenow="completionPercentage" :aria-valuemin="0" :aria-valuemax="100"></div>
-                </div>
-                <p class="text-muted small mt-2 mb-0">
-                  {{ completedSteps }} de {{ totalSteps }} etapas concluídas
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Next Steps -->
-        <div class="row mb-4" v-if="nextSteps.length > 0">
-          <div class="col-12">
-            <div class="card">
-              <div class="card-header bg-transparent">
-                <h5 class="card-title mb-0">
-                  <i class='bx bx-list-check me-2'></i>Próximos Passos
-                </h5>
-              </div>
-              <div class="card-body">
-                <p class="text-muted mb-3">Complete estas etapas para finalizar a configuração:</p>
-                <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3">
-                  <div v-for="step in nextSteps" :key="step.id" class="col">
-                    <div class="d-flex align-items-center">
-                      <div class="avatar avatar-sm me-3">
-                        <span class="avatar-initial rounded bg-label-info">
-                          <i :class="step.icon"></i>
-                        </span>
-                      </div>
-                      <div>
-                        <h6 class="mb-0">{{ step.title }}</h6>
-                        <small class="text-muted">{{ step.description }}</small>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Configuration Cards -->
-        <div class="row mb-4">
-          <div class="col-12">
-            <h5 class="fw-bold">Configurações do Sistema</h5>
-            <p class="text-muted">Configure cada módulo na sequência recomendada</p>
-          </div>
-        </div>
-        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-          <div v-for="(card, index) in computedConfigCards" :key="card.id" class="col">
-            <div class="card h-100" :class="{
-              'border-success border-2': card.isConfigured,
-              'border-warning border-2': !card.isConfigured && card.isEnabled,
-              'opacity-75': !card.isEnabled
-            }">
-              <div class="card-header bg-transparent text-center">
-                <span class="badge rounded-pill position-absolute top-0 start-0 translate-middle"
-                  :class="card.isConfigured ? 'bg-success' : card.isEnabled ? 'bg-warning' : 'bg-secondary'">
-                  {{ index + 1 }}
-                </span>
-                <i class="position-absolute top-0 end-0 p-2"
-                  :class="card.isConfigured ? 'bx bx-check-circle text-success' : card.isEnabled ? 'bx bx-time text-warning' : 'bx bx-lock text-muted'"
-                  data-bs-toggle="tooltip"
-                  :data-bs-title="card.isConfigured ? 'Configuração concluída' : card.isEnabled ? 'Aguardando configuração' : 'Bloqueado até concluir dependências'"></i>
-                <div class="avatar avatar-lg mx-auto mb-2">
-                  <span class="avatar-initial rounded"
-                    :class="card.isConfigured ? 'bg-success' : card.isEnabled ? 'bg-warning' : 'bg-secondary'">
-                    <i :class="card.icon"></i>
+            <div class="card border-warning">
+              <div class="card-body text-center py-5">
+                <div class="avatar avatar-xl mb-3">
+                  <span class="avatar-initial rounded-circle bg-label-warning">
+                    <i class='bx bx-school fs-3'></i>
                   </span>
                 </div>
-                <h5 class="card-title mb-0">{{ card.title }}</h5>
-              </div>
-              <div class="card-body text-center">
-                <span class="badge mb-3"
-                  :class="card.isConfigured ? 'bg-label-success' : card.isEnabled ? 'bg-label-warning' : 'bg-label-secondary'">
-                  {{ card.isConfigured ? 'Configurado' : card.isEnabled ? 'Disponível' : 'Bloqueado' }}
-                </span>
-                <p class="text-muted small mb-3">{{ card.statusText }}</p>
-                <button v-if="card.route && card.isEnabled" class="btn btn-sm"
-                  :class="card.isConfigured ? 'btn-outline-success' : 'btn-warning'" @click="navigateTo(card.route)"
-                  data-bs-toggle="tooltip"
-                  :data-bs-title="card.isConfigured ? 'Gerenciar configurações' : 'Iniciar configuração'">
-                  <i :class="card.buttonIcon" class="me-1"></i>
-                  {{ card.isConfigured ? 'Gerenciar' : 'Configurar' }}
-                </button>
-                <span v-else class="text-muted small">
-                  <i class='bx bx-lock me-1'></i>Aguardando dependências
-                </span>
+                <h4 class="text-warning mb-3">Configure sua Primeira Escola</h4>
+                <p class="text-muted mb-4">
+                  Para começar, cadastre uma escola e configure os detalhes necessários.
+                </p>
+                <router-link to="/admin/schools" class="btn btn-warning btn-lg" data-bs-toggle="tooltip"
+                  data-bs-placement="top" title="Iniciar cadastro de uma nova escola">
+                  <i class='bx bx-plus me-1'></i>Cadastrar Primeira Escola
+                </router-link>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- Tips Section -->
-        <div class="row mt-4">
-          <div class="col-12">
-            <div class="card bg-light">
-              <div class="card-header bg-transparent">
-                <h5 class="card-title mb-0">
-                  <i class='bx bx-bulb me-2'></i>Dicas de Configuração
-                </h5>
+        <div v-else>
+          <div class="row mb-4">
+            <div class="col-12">
+              <div class="card">
+                <div class="card-body">
+                  <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="card-title mb-0">Progresso de Configuração</h5>
+                    <span class="badge bg-label-primary">{{ completionPercentage }}% Concluído</span>
+                  </div>
+                  <div class="progress" style="height: 15px;">
+                    <div class="progress-bar bg-primary" role="progressbar" :style="{ width: completionPercentage + '%' }"
+                      :aria-valuenow="completionPercentage" :aria-valuemin="0" :aria-valuemax="100"></div>
+                  </div>
+                  <p class="text-muted small mt-2 mb-0">
+                    {{ completedSteps }} de {{ totalSteps }} etapas concluídas
+                  </p>
+                </div>
               </div>
-              <div class="card-body">
-                <div class="row row-cols-1 row-cols-md-3 g-3">
-                  <div class="col">
-                    <div class="d-flex align-items-start">
-                      <i class='bx bx-check-circle text-success me-2 mt-1'></i>
-                      <div>
-                        <h6 class="mb-1">Siga a Sequência</h6>
-                        <small class="text-muted">Configure os módulos na ordem recomendada para evitar
-                          problemas</small>
+            </div>
+          </div>
+
+          <div class="row mb-4" v-if="nextSteps.length > 0">
+            <div class="col-12">
+              <div class="card">
+                <div class="card-header bg-transparent">
+                  <h5 class="card-title mb-0">
+                    <i class='bx bx-list-check me-2'></i>Próximos Passos
+                  </h5>
+                </div>
+                <div class="card-body">
+                  <p class="text-muted mb-3">Complete estas etapas para finalizar a configuração:</p>
+                  <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3">
+                    <div v-for="step in nextSteps" :key="step.id" class="col">
+                      <div class="d-flex align-items-center">
+                        <div class="avatar avatar-sm me-3">
+                          <span class="avatar-initial rounded bg-label-info">
+                            <i :class="step.icon"></i>
+                          </span>
+                        </div>
+                        <div>
+                          <h6 class="mb-0">{{ step.title }}</h6>
+                          <small class="text-muted">{{ step.description }}</small>
+                        </div>
                       </div>
                     </div>
                   </div>
-                  <div class="col">
-                    <div class="d-flex align-items-start">
-                      <i class='bx bx-data text-info me-2 mt-1'></i>
-                      <div>
-                        <h6 class="mb-1">Dados Essenciais</h6>
-                        <small class="text-muted">Alguns módulos dependem de outros para funcionar</small>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row mb-4">
+            <div class="col-12">
+              <h5 class="fw-bold">Configurações do Sistema</h5>
+              <p class="text-muted">Configure cada módulo na sequência recomendada</p>
+            </div>
+          </div>
+          <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+            <div v-for="(card, index) in computedConfigCards" :key="card.id" class="col">
+              <div class="card h-100 card-hover" :class="{ // Adicionado 'card-hover'
+                  'border-success border-2': card.isConfigured,
+                  'border-warning border-2': !card.isConfigured && card.isEnabled,
+                  'opacity-75': !card.isEnabled
+                }">
+                <div class="card-header bg-transparent text-center">
+                  <span class="badge rounded-pill position-absolute top-0 start-0 translate-middle"
+                    :class="card.isConfigured ? 'bg-success' : card.isEnabled ? 'bg-warning' : 'bg-secondary'">
+                    {{ index + 1 }}
+                  </span>
+                  <i class="position-absolute top-0 end-0 p-2"
+                    :class="card.isConfigured ? 'bx bx-check-circle text-success' : card.isEnabled ? 'bx bx-time text-warning' : 'bx bx-lock text-muted'"
+                    data-bs-toggle="tooltip"
+                    :data-bs-title="card.isConfigured ? 'Configuração concluída' : card.isEnabled ? 'Aguardando configuração' : 'Bloqueado até concluir dependências'"></i>
+                  <div class="avatar avatar-lg mx-auto mb-2">
+                    <span class="avatar-initial rounded"
+                      :class="card.isConfigured ? 'bg-success' : card.isEnabled ? 'bg-warning' : 'bg-secondary'">
+                      <i :class="card.icon"></i>
+                    </span>
+                  </div>
+                  <h5 class="card-title mb-0">{{ card.title }}</h5>
+                </div>
+                <div class="card-body text-center">
+                  <span class="badge mb-3"
+                    :class="card.isConfigured ? 'bg-label-success' : card.isEnabled ? 'bg-label-warning' : 'bg-label-secondary'">
+                    {{ card.isConfigured ? 'Configurado' : card.isEnabled ? 'Disponível' : 'Bloqueado' }}
+                  </span>
+                  <p class="text-muted small mb-3">{{ card.statusText }}</p>
+                  <button v-if="card.route && card.isEnabled" class="btn btn-sm"
+                    :class="card.isConfigured ? 'btn-outline-success' : 'btn-warning'" @click="navigateTo(card.route)"
+                    data-bs-toggle="tooltip"
+                    :data-bs-title="card.isConfigured ? 'Gerenciar configurações' : 'Iniciar configuração'">
+                    <i :class="card.buttonIcon" class="me-1"></i>
+                    {{ card.isConfigured ? 'Gerenciar' : 'Configurar' }}
+                  </button>
+                  <span v-else class="text-muted small">
+                    <i class='bx bx-lock me-1'></i>Aguardando dependências
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row mt-4">
+            <div class="col-12">
+              <div class="card bg-light">
+                <div class="card-header bg-transparent">
+                  <h5 class="card-title mb-0">
+                    <i class='bx bx-bulb me-2'></i>Dicas de Configuração
+                  </h5>
+                </div>
+                <div class="card-body">
+                  <div class="row row-cols-1 row-cols-md-3 g-3">
+                    <div class="col">
+                      <div class="d-flex align-items-start">
+                        <i class='bx bx-check-circle text-success me-2 mt-1'></i>
+                        <div>
+                          <h6 class="mb-1">Siga a Sequência</h6>
+                          <small class="text-muted">Configure os módulos na ordem recomendada para evitar
+                            problemas</small>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                  <div class="col">
-                    <div class="d-flex align-items-start">
-                      <i class='bx bx-support text-warning me-2 mt-1'></i>
-                      <div>
-                        <h6 class="mb-1">Precisa de Ajuda?</h6>
-                        <small class="text-muted">Consulte a documentação ou entre em contato com o suporte</small>
+                    <div class="col">
+                      <div class="d-flex align-items-start">
+                        <i class='bx bx-data text-info me-2 mt-1'></i>
+                        <div>
+                          <h6 class="mb-1">Dados Essenciais</h6>
+                          <small class="text-muted">Alguns módulos dependem de outros para funcionar</small>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col">
+                      <div class="d-flex align-items-start">
+                        <i class='bx bx-support text-warning me-2 mt-1'></i>
+                        <div>
+                          <h6 class="mb-1">Precisa de Ajuda?</h6>
+                          <small class="text-muted">Consulte a documentação ou entre em contato com o suporte</small>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -215,7 +217,6 @@
       </div>
     </div>
   </div>
-
 </template>
 
 <script setup lang="ts">
@@ -224,12 +225,17 @@ import { useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/authStore';
 import { useSchoolsStore } from '@/stores/schoolStore';
 import { useSettingsStore } from '@/stores/settingsStore';
-import Swal from 'sweetalert2';
+// Importação do SweetAlert2 removida, pois não será mais usado nesta tela.
+// import Swal from 'sweetalert2';
 
 const router = useRouter();
 const authStore = useAuthStore();
 const schoolsStore = useSchoolsStore();
 const settingsStore = useSettingsStore();
+
+// --- ESTADO DO LOADING ---
+// Nova variável reativa para controlar a visibilidade do spinner
+const isLoading = ref(true);
 
 // --- DEFINIÇÃO DE TIPOS ---
 interface ConfigItemStatus {
@@ -422,13 +428,16 @@ const handleImageError = (event: Event) => {
 };
 
 const fetchSchoolConfigurationStatus = async () => {
+  // Ativa o spinner antes de iniciar o carregamento
+  isLoading.value = true;
   const activeSchoolId = settingsStore.activeSchool?.id;
   if (!activeSchoolId) {
     Object.keys(configStatus).forEach(key => configStatus[key as keyof ConfigItemStatus] = false);
+    isLoading.value = false; // Desativa o spinner se não houver escola ativa
     return;
   }
   try {
-    // Replace with actual API call
+    // Simula uma chamada API (manter o setTimeout para teste)
     await new Promise(resolve => setTimeout(resolve, 1500));
     configStatus.unidade = true;
     configStatus.periodo = true;
@@ -438,22 +447,16 @@ const fetchSchoolConfigurationStatus = async () => {
     configStatus.prova = false;
     configStatus.valor = false;
     configStatus.calendario = false;
-    await Swal.fire({
-      icon: 'success',
-      title: 'Configurações carregadas',
-      text: 'O status de configuração da escola foi carregado com sucesso!',
-      timer: 1500,
-      showConfirmButton: false
-    });
+    // Swal.fire removido daqui
+
   } catch (error) {
-    Swal.fire({
-      icon: 'error',
-      title: 'Erro',
-      text: `Ocorreu um erro ao carregar o status de configuração: ${error}`,
-      confirmButtonText: 'Ok'
-    });
+    // No lugar do Swal.fire de erro, você pode logar o erro ou usar um toast/notificação mais discreta
+    console.error("Erro ao carregar o status de configuração:", error);
     Object.keys(configStatus).forEach(key => configStatus[key as keyof ConfigItemStatus] = false);
     configStatus.unidade = settingsStore.activeSchool ? true : false;
+  } finally {
+    // Desativa o spinner após a conclusão (sucesso ou erro)
+    isLoading.value = false;
   }
 };
 
@@ -467,12 +470,16 @@ watch(() => settingsStore.activeSchool, (newSchool) => {
     fetchSchoolConfigurationStatus();
   } else {
     Object.keys(configStatus).forEach(key => configStatus[key as keyof ConfigItemStatus] = false);
+    isLoading.value = false; // Desativa o spinner se a escola ativa mudar para nulo
   }
 }, { immediate: true });
 
 // --- LIFECYCLE ---
 onMounted(() => {
-  fetchSchoolConfigurationStatus();
+  // fetchSchoolConfigurationStatus é chamado pelo watcher com `immediate: true`
+  // Portanto, não precisamos chamar aqui novamente, a menos que haja outra lógica de inicialização
+  // fetchSchoolConfigurationStatus(); // Removido para evitar chamada duplicada
+
   // Initialize Bootstrap tooltips
   const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
   tooltipTriggerList.forEach(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
@@ -480,6 +487,17 @@ onMounted(() => {
 </script>
 
 <style scoped>
+/* Adicionado um estilo para posicionar o spinner no centro da tela, de forma absoluta */
+.content-wrapper {
+  position: relative; /* Garante que o posicionamento absoluto do spinner seja relativo a este wrapper */
+}
+
+/* Estilo para escurecer ou desfocar o fundo enquanto o spinner está ativo */
+.content-wrapper.loading-overlay {
+  filter: blur(2px); /* Efeito de desfoque */
+  pointer-events: none; /* Impede interações enquanto carrega */
+}
+
 .card {
   border-radius: 0.5rem;
   transition: all 0.3s ease;
@@ -514,5 +532,10 @@ onMounted(() => {
 
 .progress-bar {
   background-color: #696cff;
+}
+
+/* Estilo para esconder o conteúdo quando o spinner está ativo */
+.d-none {
+  display: none !important;
 }
 </style>
